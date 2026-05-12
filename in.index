@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مشاريع المقاولات - عرض تقديمي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* شريط التنقل */
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .logo span {
+            color: #e67e22;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #e67e22;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* البطاقات */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            color: #2a5298;
+            border-right: 4px solid #e67e22;
+            padding-right: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* جداول */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* أزرار */
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+            transform: scale(1.02);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* بطاقات الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* قوائم منسدلة */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        select, input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        /* تنبيهات */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* فوتر */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            background: rgba(0,0,0,0.3);
+            margin-top: 2rem;
+        }
+
+        .developer-credit {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .developer-credit h3 {
+            color: #e67e22;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .developer-credit p {
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .developer-credit .engineer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f39c12;
+            margin: 0.3rem 0;
+        }
+
+        /* مشاريع */
+        .project-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .project-tab {
+            padding: 0.5rem 1.2rem;
+            background: #e9ecef;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .project-tab.active {
+            background: #2a5298;
+            color: white;
+        }
+
+        /* نموذج إضافة */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">مقاولاتي <span>| نظام إدارة المشاريع</span></div>
+        <div class="nav-links">
+            <a onclick="showSection('dashboard')">📊 لوحة التحكم</a>
+            <a onclick="showSection('projects')">🏗️ المشاريع</a>
+            <a onclick="showSection('workers')">👷 العمال</a>
+            <a onclick="showSection('suppliers')">🚚 الموردين</a>
+            <a onclick="showSection('transactions')">💰 الحركات المالية</a>
+            <a onclick="showSection('reports')">📈 التقارير</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- لوحة التحكم -->
+        <div id="dashboard" class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>إجمالي المشاريع</h3>
+                    <div class="value" id="totalProjects">3</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #e67e22, #f39c12);">
+                    <h3>إجمالي الوارد</h3>
+                    <div class="value" id="totalIncome">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                    <h3>إجمالي المنصرف</h3>
+                    <div class="value" id="totalExpense">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
+                    <h3>صافي الأرباح</h3>
+                    <div class="value" id="totalProfit">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📌 ملخص سريع للمشاريع</h2>
+                <div class="table-responsive">
+                    <table id="projectsSummaryTable">
+                        <thead>
+                            <tr><th>المشروع</th><th>الوارد</th><th>المنصرف</th><th>المتبقي</th><th>نسبة الإنجاز</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔄 آخر الحركات</h2>
+                <div class="table-responsive">
+                    <table id="recentTransactionsTable">
+                        <thead><tr><th>التاريخ</th><th>المشروع</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- المشاريع -->
+        <div id="projects" class="section" style="display:none;">
+            <div class="card">
+                <h2>🏗️ إدارة المشاريع</h2>
+                <div class="filter-bar">
+                    <button class="btn btn-primary" onclick="openAddProjectModal()">+ مشروع جديد</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="projectsTable">
+                        <thead><tr><th>#</th><th>اسم المشروع</th><th>الموقع</th><th>تاريخ البداية</th><th>الحالة</th><th>الرصيد</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- العمال -->
+        <div id="workers" class="section" style="display:none;">
+            <div class="card">
+                <h2>👷 إدارة العمال</h2>
+                <div class="filter-bar">
+                    <button class="btn btn-primary" onclick="openAddWorkerModal()">+ عامل جديد</button>
+                    <select id="workerProjectFilter" onchange="loadWorkers()">
+                        <option value="">كل المشاريع</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table id="workersTable">
+                        <thead><tr><th>الاسم</th><th>المهنة</th><th>نظام الحساب</th><th>السعر</th><th>المشروع</th><th>المستحقات</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- الموردين -->
+        <div id="suppliers" class="section" style="display:none;">
+            <div class="card">
+                <h2>🚚 إدارة الموردين</h2>
+                <div class="filter-bar">
+                    <button class="btn btn-primary" onclick="openAddSupplierModal()">+ مورد جديد</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="suppliersTable">
+                        <thead><tr><th>الاسم</th><th>التخصص</th><th>رقم الهاتف</th><th>إجمالي المشتريات</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- الحركات المالية -->
+        <div id="transactions" class="section" style="display:none;">
+            <div class="card">
+                <h2>💰 إضافة حركة مالية جديدة</h2>
+                <div class="alert alert-info">
+                    📌 وارد: من المالك | منصرف: عمال - موردين - نثريات
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="txDate">
+                    </div>
+                    <div class="form-group">
+                        <label>المشروع</label>
+                        <select id="txProject"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الحركة</label>
+                        <select id="txType" onchange="toggleTransactionFields()">
+                            <option value="وارد">💰 وارد (من المالك)</option>
+                            <option value="منصرف">💸 منصرف</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>التصنيف</label>
+                        <select id="txCategory"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>المبلغ</label>
+                        <input type="number" id="txAmount" placeholder="المبلغ">
+                    </div>
+                    <div class="form-group">
+                        <label>الوصف</label>
+                        <input type="text" id="txDesc" placeholder="تفاصيل إضافية">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="addTransaction()">تسجيل الحركة</button>
+            </div>
+
+            <div class="card">
+                <h2>📋 سجل الحركات</h2>
+                <div class="filter-bar">
+                    <select id="transactionsProjectFilter" onchange="loadTransactions()">
+                        <option value="">كل المشاريع</option>
+                    </select>
+                    <select id="transactionsTypeFilter" onchange="loadTransactions()">
+                        <option value="">الكل</option>
+                        <option value="وارد">وارد</option>
+                        <option value="منصرف">منصرف</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table id="transactionsTable">
+                        <thead><tr><th>التاريخ</th><th>المشروع</th><th>النوع</th><th>التصنيف</th><th>الوصف</th><th>المبلغ</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- التقارير -->
+        <div id="reports" class="section" style="display:none;">
+            <div class="card">
+                <h2>📈 تقرير المشروع</h2>
+                <div class="filter-bar">
+                    <select id="reportProjectSelect" onchange="generateReport()">
+                        <option value="">اختر المشروع</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="generateReport()">عرض التقرير</button>
+                    <button class="btn btn-success" onclick="exportToExcel()">📎 تصدير Excel</button>
+                    <button class="btn btn-warning" onclick="printReport()">🖨️ طباعة</button>
+                </div>
+            </div>
+
+            <div id="reportContent" class="card" style="display:none;">
+                <h2 id="reportTitle"></h2>
+                <div class="stats-grid" id="reportStats"></div>
+                <h3>تفاصيل المصروفات حسب التصنيف</h3>
+                <div class="table-responsive">
+                    <table id="reportDetailsTable">
+                        <thead><tr><th>التصنيف</th><th>المبلغ</th><th>النسبة</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>نظام إدارة مشاريع المقاولات - متوفر كتطبيق موبايل (Android/iOS) وتطبيق ويندوز</p>
+        <p>للاستفسار: <strong>alhalmysalm6@gmail.com</strong></p>
+        
+        <!-- قسم المهندسين الذين قاموا بالعمل -->
+        <div class="developer-credit">
+            <h3>🏆 تم الإعداد والتطوير بواسطة</h3>
+            <p class="engineer-name">م. رياض محمد الحذيفي</p>
+            <p class="engineer-name">م. سالم علي الحالمي</p>
+            <p style="margin-top: 0.8rem; font-size: 0.85rem; opacity: 0.8;">مهندسو برمجيات وتطبيقات - متخصصون في أنظمة إدارة المشاريع</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== البيانات التجريبية ====================
+        let projects = [
+            { id: 1, name: "فيلا السلام", location: "الرياض", startDate: "2025-01-01", status: "نشط", balance: 0 },
+            { id: 2, name: "عمارة النور", location: "جدة", startDate: "2025-02-01", status: "نشط", balance: 0 },
+            { id: 3, name: "مدرسة المعرفة", location: "الدمام", startDate: "2025-03-01", status: "قيد التنفيذ", balance: 0 }
+        ];
+
+        let workers = [
+            { id: 1, name: "أحمد محمد", job: "نجار", paymentType: "يومية", rate: 50, projectId: 1, dues: 0 },
+            { id: 2, name: "خالد علي", job: "حداد", paymentType: "بالمتر", rate: 30, projectId: 1, dues: 0 },
+            { id: 3, name: "سعيد حسن", job: "بناء", paymentType: "بالشهر", rate: 1800, projectId: 2, dues: 0 }
+        ];
+
+        let suppliers = [
+            { id: 1, name: "مؤسسة البناء", type: "سمنت", phone: "0500000001", total: 0 },
+            { id: 2, name: "شركة الكهرباء", type: "كهرباء", phone: "0500000002", total: 0 },
+            { id: 3, name: "مصنع الخرسانة", type: "خرسانة", phone: "0500000003", total: 0 }
+        ];
+
+        let transactions = [
+            { id: 1, date: "2025-01-15", projectId: 1, type: "وارد", category: "من المالك", amount: 50000, desc: "دفعة أولى" },
+            { id: 2, date: "2025-01-16", projectId: 1, type: "منصرف", category: "عمال - نجارة", amount: 2000, desc: "أجور 5 عمال" },
+            { id: 3, date: "2025-01-16", projectId: 1, type: "منصرف", category: "موردين - سمنت", amount: 3200, desc: "200 كيس سمنت" },
+            { id: 4, date: "2025-01-20", projectId: 1, type: "منصرف", category: "نثريات - نقل", amount: 500, desc: "نقل مواد" },
+            { id: 5, date: "2025-02-05", projectId: 2, type: "وارد", category: "من المالك", amount: 80000, desc: "دفعة أولى" }
+        ];
+
+        let nextId = { project: 4, worker: 4, supplier: 4, transaction: 6 };
+
+        // تحديث أرصدة المشاريع
+        function updateBalances() {
+            projects.forEach(p => { p.balance = 0; });
+            transactions.forEach(t => {
+                let project = projects.find(p => p.id === t.projectId);
+                if (project) {
+                    if (t.type === "وارد") project.balance += t.amount;
+                    else project.balance -= t.amount;
+                }
+            });
+        }
+
+        // إعادة تحميل جميع الجداول
+        function refreshAll() {
+            updateBalances();
+            loadProjectsSummary();
+            loadProjectsTable();
+            loadWorkers();
+            loadSuppliers();
+            loadTransactionSelects();
+            loadTransactions();
+            updateStats();
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            let totalIncome = transactions.filter(t => t.type === "وارد").reduce((s, t) => s + t.amount, 0);
+            let totalExpense = transactions.filter(t => t.type === "منصرف").reduce((s, t) => s + t.amount, 0);
+            document.getElementById('totalIncome').innerText = totalIncome.toLocaleString();
+            document.getElementById('totalExpense').innerText = totalExpense.toLocaleString();
+            document.getElementById('totalProfit').innerText = (totalIncome - totalExpense).toLocaleString();
+            document.getElementById('totalProjects').innerText = projects.length;
+        }
+
+        // عرض ملخص المشاريع
+        function loadProjectsSummary() {
+            let tbody = document.querySelector('#projectsSummaryTable tbody');
+            tbody.innerHTML = '';
+            projects.forEach(p => {
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = p.name;
+                let income = transactions.filter(t => t.projectId === p.id && t.type === "وارد").reduce((s, t) => s + t.amount, 0);
+                let expense = transactions.filter(t => t.projectId === p.id && t.type === "منصرف").reduce((s, t) => s + t.amount, 0);
+                row.insertCell(1).innerText = income.toLocaleString();
+                row.insertCell(2).innerText = expense.toLocaleString();
+                row.insertCell(3).innerText = (income - expense).toLocaleString();
+                let percentage = income > 0 ? Math.min(100, Math.round((expense / income) * 100)) : 0;
+                row.insertCell(4).innerHTML = `<div style="background:#e0e0e0; border-radius:10px;"><div style="background:#27ae60; width:${percentage}%; border-radius:10px; text-align:center; color:white; font-size:0.8rem;">${percentage}%</div></div>`;
+            });
+        }
+
+        // عرض المشاريع
+        function loadProjectsTable() {
+            let tbody = document.querySelector('#projectsTable tbody');
+            tbody.innerHTML = '';
+            projects.forEach(p => {
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = p.id;
+                row.insertCell(1).innerText = p.name;
+                row.insertCell(2).innerText = p.location;
+                row.insertCell(3).innerText = p.startDate;
+                row.insertCell(4).innerHTML = `<span style="background:#27ae60; color:white; padding:0.2rem 0.8rem; border-radius:20px;">${p.status}</span>`;
+                row.insertCell(5).innerText = p.balance.toLocaleString();
+                row.insertCell(6).innerHTML = `<button class="btn btn-danger btn-sm" onclick="deleteProject(${p.id})">حذف</button>`;
+            });
+        }
+
+        // عرض العمال
+        function loadWorkers() {
+            let filterProject = document.getElementById('workerProjectFilter').value;
+            let tbody = document.querySelector('#workersTable tbody');
+            tbody.innerHTML = '';
+            let filtered = filterProject ? workers.filter(w => w.projectId == filterProject) : workers;
+            filtered.forEach(w => {
+                let project = projects.find(p => p.id === w.projectId);
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = w.name;
+                row.insertCell(1).innerText = w.job;
+                row.insertCell(2).innerText = w.paymentType;
+                row.insertCell(3).innerText = w.rate;
+                row.insertCell(4).innerText = project ? project.name : '-';
+                row.insertCell(5).innerText = w.dues.toLocaleString();
+                row.insertCell(6).innerHTML = `<button class="btn btn-danger btn-sm" onclick="deleteWorker(${w.id})">حذف</button>`;
+            });
+        }
+
+        // عرض الموردين
+        function loadSuppliers() {
+            let tbody = document.querySelector('#suppliersTable tbody');
+            tbody.innerHTML = '';
+            suppliers.forEach(s => {
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = s.name;
+                row.insertCell(1).innerText = s.type;
+                row.insertCell(2).innerText = s.phone;
+                row.insertCell(3).innerText = s.total.toLocaleString();
+                row.insertCell(4).innerHTML = `<button class="btn btn-danger btn-sm" onclick="deleteSupplier(${s.id})">حذف</button>`;
+            });
+        }
+
+        // تعبئة قوائم المشاريع
+        function loadTransactionSelects() {
+            let selects = ['txProject', 'workerProjectFilter', 'transactionsProjectFilter', 'reportProjectSelect'];
+            selects.forEach(id => {
+                let select = document.getElementById(id);
+                if (select) {
+                    select.innerHTML = id === 'workerProjectFilter' ? '<option value="">كل المشاريع</option>' : '<option value="">اختر المشروع</option>';
+                    projects.forEach(p => {
+                        let option = document.createElement('option');
+                        option.value = p.id;
+                        option.innerText = p.name;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // عرض الحركات
+        function loadTransactions() {
+            let filterProject = document.getElementById('transactionsProjectFilter').value;
+            let filterType = document.getElementById('transactionsTypeFilter').value;
+            let tbody = document.querySelector('#transactionsTable tbody');
+            tbody.innerHTML = '';
+            let filtered = transactions.filter(t => 
+                (!filterProject || t.projectId == filterProject) &&
+                (!filterType || t.type === filterType)
+            );
+            filtered.forEach(t => {
+                let project = projects.find(p => p.id === t.projectId);
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = t.date;
+                row.insertCell(1).innerText = project ? project.name : '-';
+                row.insertCell(2).innerHTML = t.type === 'وارد' ? '💰 وارد' : '💸 منصرف';
+                row.insertCell(3).innerText = t.category;
+                row.insertCell(4).innerText = t.desc;
+                row.insertCell(5).innerText = t.amount.toLocaleString();
+                row.insertCell(6).innerHTML = `<button class="btn btn-danger btn-sm" onclick="deleteTransaction(${t.id})">حذف</button>`;
+            });
+
+            // تحديث آخر الحركات في لوحة التحكم
+            let recentTbody = document.querySelector('#recentTransactionsTable tbody');
+            if (recentTbody) {
+                recentTbody.innerHTML = '';
+                [...transactions].reverse().slice(0, 5).forEach(t => {
+                    let project = projects.find(p => p.id === t.projectId);
+                    let row = recentTbody.insertRow();
+                    row.insertCell(0).innerText = t.date;
+                    row.insertCell(1).innerText = project ? project.name : '-';
+                    row.insertCell(2).innerHTML = t.type === 'وارد' ? '💰 وارد' : '💸 منصرف';
+                    row.insertCell(3).innerText = t.category;
+                    row.insertCell(4).innerText = t.amount.toLocaleString();
+                });
+            }
+        }
+
+        // تغيير حقول التصنيف حسب نوع الحركة
+        function toggleTransactionFields() {
+            let type = document.getElementById('txType').value;
+            let categorySelect = document.getElementById('txCategory');
+            if (type === 'وارد') {
+                categorySelect.innerHTML = '<option value="من المالك">💰 من المالك</option>';
+            } else {
+                categorySelect.innerHTML = `
+                    <option value="عمال - نجارة">👷 عمال - نجارة</option>
+                    <option value="عمال - حدادة">👷 عمال - حدادة</option>
+                    <option value="عمال - مليس">👷 عمال - مليس</option>
+                    <option value="عمال - بناء">👷 عمال - بناء</option>
+                    <option value="موردين - سمنت">🚚 موردين - سمنت</option>
+                    <option value="موردين - حديد">🚚 موردين - حديد</option>
+                    <option value="موردين - كهرباء">🚚 موردين - كهرباء</option>
+                    <option value="موردين - خرسانة">🚚 موردين - خرسانة</option>
+                    <option value="نثريات - نقل">📦 نثريات - نقل</option>
+                    <option value="نثريات - وايت ماء">💧 نثريات - وايت ماء</option>
+                    <option value="نثريات - إيجار معدات">🏗️ نثريات - إيجار معدات</option>
+                `;
+            }
+        }
+
+        // إضافة حركة
+        function addTransaction() {
+            let date = document.getElementById('txDate').value;
+            let projectId = parseInt(document.getElementById('txProject').value);
+            let type = document.getElementById('txType').value;
+            let category = document.getElementById('txCategory').value;
+            let amount = parseFloat(document.getElementById('txAmount').value);
+            let desc = document.getElementById('txDesc').value;
+
+            if (!date || !projectId || !amount) {
+                alert('الرجاء تعبئة جميع الحقول');
+                return;
+            }
+
+            transactions.push({
+                id: nextId.transaction++,
+                date: date,
+                projectId: projectId,
+                type: type,
+                category: category,
+                amount: amount,
+                desc: desc
+            });
+
+            refreshAll();
+            document.getElementById('txAmount').value = '';
+            document.getElementById('txDesc').value = '';
+            alert('تمت إضافة الحركة بنجاح');
+        }
+
+        // حذف
+        function deleteProject(id) { projects = projects.filter(p => p.id !== id); refreshAll(); }
+        function deleteWorker(id) { workers = workers.filter(w => w.id !== id); refreshAll(); }
+        function deleteSupplier(id) { suppliers = suppliers.filter(s => s.id !== id); refreshAll(); }
+        function deleteTransaction(id) { transactions = transactions.filter(t => t.id !== id); refreshAll(); }
+
+        // تقرير
+        function generateReport() {
+            let projectId = document.getElementById('reportProjectSelect').value;
+            if (!projectId) { alert('اختر مشروعاً أولاً'); return; }
+            let project = projects.find(p => p.id == projectId);
+            document.getElementById('reportTitle').innerText = `تقرير مشروع: ${project.name}`;
+            
+            let income = transactions.filter(t => t.projectId == projectId && t.type === "وارد").reduce((s, t) => s + t.amount, 0);
+            let expense = transactions.filter(t => t.projectId == projectId && t.type === "منصرف").reduce((s, t) => s + t.amount, 0);
+            
+            document.getElementById('reportStats').innerHTML = `
+                <div class="stat-card" style="background:#27ae60;">المجموع الكلي للوارد<h3 class="value">${income.toLocaleString()}</h3></div>
+                <div class="stat-card" style="background:#e74c3c;">المجموع الكلي للمنصرف<h3 class="value">${expense.toLocaleString()}</h3></div>
+                <div class="stat-card" style="background:#2a5298;">صافي الربح<h3 class="value">${(income - expense).toLocaleString()}</h3></div>
+            `;
+            
+            let categories = {};
+            transactions.filter(t => t.projectId == projectId && t.type === "منصرف").forEach(t => {
+                categories[t.category] = (categories[t.category] || 0) + t.amount;
+            });
+            let tbody = document.querySelector('#reportDetailsTable tbody');
+            tbody.innerHTML = '';
+            for (let [cat, amt] of Object.entries(categories)) {
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = cat;
+                row.insertCell(1).innerText = amt.toLocaleString();
+                row.insertCell(2).innerText = expense ? Math.round((amt / expense) * 100) + '%' : '0%';
+            }
+            document.getElementById('reportContent').style.display = 'block';
+        }
+
+        function exportToExcel() { alert("يمكن تصدير التقرير إلى Excel من القائمة File → Download → Microsoft Excel"); }
+        function printReport() { window.print(); }
+
+        // نماذج إضافة
+        function openAddProjectModal() {
+            let name = prompt("اسم المشروع:");
+            if (name) {
+                projects.push({ id: nextId.project++, name: name, location: "-", startDate: new Date().toISOString().slice(0,10), status: "نشط", balance: 0 });
+                refreshAll();
+            }
+        }
+        function openAddWorkerModal() {
+            let name = prompt("اسم العامل:");
+            let job = prompt("المهنة (نجار/حداد/مليس/بناء):");
+            let type = prompt("نظام الحساب (يومية/بالمتر/بالشهر/إنجاز):");
+            let rate = parseFloat(prompt("السعر:"));
+            if (name && rate) {
+                workers.push({ id: nextId.worker++, name: name, job: job, paymentType: type, rate: rate, projectId: 1, dues: 0 });
+                refreshAll();
+            }
+        }
+        function openAddSupplierModal() {
+            let name = prompt("اسم المورد:");
+            let type = prompt("التخصص (سمنت/حديد/كهرباء/خرسانة/نيس):");
+            if (name) {
+                suppliers.push({ id: nextId.supplier++, name: name, type: type, phone: "-", total: 0 });
+                refreshAll();
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        // تهيئة أولية
+        toggleTransactionFields();
+        refreshAll();
+    </script>
+</body>
+</html>
